@@ -6,9 +6,6 @@ import squalane_CN_contact as sqcn
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.pyplot import cm
 
-path = '/Users/ec18006/OneDrive - University of Bristol/CHAMPS/Research_Topics/Squalane_project/100SQA_equilibration/300K_slab_equil.pdb'
-frames = sqcn.read_pdb(path)
-
 
 def plot_3d_hist(trajectory, slices=50, step=10, azim=330, elev=50):
 
@@ -33,7 +30,8 @@ def plot_3d_hist(trajectory, slices=50, step=10, azim=330, elev=50):
     # plt.savefig('density_slab_%s_jet.png' % azim)
     plt.show()
 
-
+path = '/Users/ec18006/OneDrive - University of Bristol/CHAMPS/Research_Topics/Squalane_project/100SQA_equilibration/300K_slab_equil.pdb'
+frames = sqcn.read_pdb(path)
 plot_3d_hist(frames, slices=30, step=100)
 
 # For gif making

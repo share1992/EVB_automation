@@ -1,4 +1,10 @@
+import os
 from squalane_CN_contact import *
+
+dirname = os.path.dirname(__file__)
+probe_dirname = os.path.join(dirname, 'test_input_files_probe')
+reactive_dirname = os.path.join(dirname, 'test_input_files_reactive')
+template_dirname = os.path.join(dirname, 'template_and_patch_files')
 
 # If not already complete, generate the patch definitions file (squalane_patch_defs_all.txt) by uncommenting the two
 # lines below
@@ -7,12 +13,14 @@ from squalane_CN_contact import *
 
 # Generate probe trajectory
 # Path to restart file being altered (a copy will be made)
-sqa_rst = '/Users/ec18006/OneDrive - University of Bristol/CHAMPS/Research_Topics/Squalane_project/daisy_chaining/Res/dyn100.res_copy'
-# sqa_rst = '/Users/ec18006/OneDrive - University of Bristol/CHAMPS/Research_Topics/Squalane_project/daisy_chaining/Res/dyn101.res_copy'
-# sqa_rst = '/Users/ec18006/OneDrive - University of Bristol/CHAMPS/Research_Topics/Squalane_project/daisy_chaining/Res/dyn102.res_copy'
+sqa_rst = os.path.join(probe_dirname, 'dyn100.res')
+# sqa_rst = os.path.join(probe_dirname, 'dyn101.res')
+# sqa_rst = os.path.join(probe_dirname, 'dyn102.res')
 
 # Path to crd file being altered (a copy will be made)
-sqa_crd = '/Users/ec18006/OneDrive - University of Bristol/CHAMPS/Research_Topics/Squalane_project/daisy_chaining/Crd/dyn100.crd_copy'
+sqa_crd = os.path.join(probe_dirname, 'dyn100.crd')
+# sqa_crd = os.path.join(probe_dirname, 'dyn101.crd')
+# sqa_crd = os.path.join(probe_dirname, 'dyn102.crd')
 
 # CN velocity in m/s in the z-direction (default=-1800, or 1800 m/s in the -z-direction)
 cn_velocity_ms = -1800
@@ -25,8 +33,8 @@ generate_probe_trajectory_rst_file(sqa_rst, cn_velocity_ms=cn_velocity_ms, times
 
 # Determine relevant indexes of H atoms that come within a threshold distance of the CN C and the squalane fragments
 # they are associated with
-# probe_path = '/Users/ec18006/OneDrive - University of Bristol/CHAMPS/Research_Topics/Squalane_project/daisy_chaining/probe_test/dyn100_with_cn_probe_test_1.pdb'
-# template_input_path = '/Users/ec18006/OneDrive - University of Bristol/CHAMPS/Research_Topics/Squalane_project/daisy_chaining/probe_test/template_input.inp'
+# probe_path = os.path.join(reactive_dirname, 'dyn100_with_cn_probe_test_1.pdb')
+# template_input_path = os.path.join(template_dirname, 'template_input.inp')
 
 # distance_threshold = 5.0
 

@@ -4,6 +4,8 @@ import pandas as pd
 import os
 from scipy.spatial.distance import cdist
 import MDAnalysis as md
+import shutil
+import subprocess
 
 # Dictionary of atom INDEXES from VMD. C: (H, (H, (H)))
 all_atoms = {0: (30, 31, 32),
@@ -95,7 +97,10 @@ def get_relevant_indices_H_atoms_only(traj_frames_df, atom_indexes):
             local_index_number = "".join([local_index_split[1], local_index_split[2]])
 
             local_indexes.append(int(local_index_number))
+            # NOTE: these fragment indices start at 1. In order to correctly visualize them in VMD, you have to subtract
+            #  1 from the fragment index listed here.
             fragments.append(int(fragment_index))
+            # fragments.append(int(fragment_index)-1)
 
     d = {'local index': local_indexes, 'fragment index': fragments}
     relevant_indices_and_fragments_df = pd.DataFrame(d)
@@ -171,70 +176,6 @@ def generate_patch_defs(H_atoms, atom_dictionary, squalane_mol2_file, skeleton_f
             outputfile.write("\n\n")
 
 
-def print_input_file_lines(relevant_indices_and_fragments):
-    print("\n")
-    for i in range(len(relevant_indices_and_fragments)):
-        index_1 = relevant_indices_and_fragments['local index'][i]
-        index_2 = relevant_indices_and_fragments['fragment index'][i]
-
-        print("if @NODE .eq. %s PATCH RH%s A %s A 101 setup" % ((i + 1), index_1, index_2))
-
-        # Maximum of 16 nodes possible
-        if i >= 14:
-            break
-
-    print("\n")
-    for i in range(len(relevant_indices_and_fragments)):
-        print("if @NODE .eq. %s AUTO ANGL DIH" % (i + 1))
-
-        # Maximum of 16 nodes possible
-        if i >= 14:
-            break
-
-    print("\n")
-    for i in range(len(relevant_indices_and_fragments)):
-        print("if @NODE .eq. %s print psf" % (i + 1))
-
-        # Maximum of 16 nodes possible
-        if i >= 14:
-            break
-
-
-def print_patch_lines(relevant_indices_and_fragments):
-
-    print("\n")
-    for i in range(len(relevant_indices_and_fragments)):
-        index_1 = relevant_indices_and_fragments['local index'][i]
-        index_2 = relevant_indices_and_fragments['fragment index'][i]
-
-        print("if @NODE .eq. %s PATCH RH%s A %s A 101 setup" % ((i + 1), index_1, index_2))
-
-        # Maximum of 16 nodes possible
-        if i >= 14:
-            break
-
-
-def print_autogeneration_lines(relevant_indices_and_fragments):
-
-    print("\n")
-    for i in range(len(relevant_indices_and_fragments)):
-        print("if @NODE .eq. %s AUTO ANGL DIH" % (i + 1))
-
-        # Maximum of 16 nodes possible
-        if i >= 14:
-            break
-
-
-def print_psf_lines(relevant_indices_and_fragments):
-    print("\n")
-    for i in range(len(relevant_indices_and_fragments)):
-        print("if @NODE .eq. %s print psf" % (i + 1))
-
-        # Maximum of 16 nodes possible
-        if i >= 14:
-            break
-
-
 def print_patch_lines_to_input_file(relevant_indices_and_fragments, template_file_path):
 
     with open(template_file_path) as template_file, open('test_input.inp', 'w') as output_file:
@@ -306,7 +247,7 @@ def print_psf_lines_to_input_file(relevant_indices_and_fragments):
             break
 
 
-def print_shft_and_coup_lines_to_input_file(relevant_indices_and_fragments, shift_parameter=-25.0,
+def print_shift_and_coupling_lines_to_input_file(relevant_indices_and_fragments, shift_parameter=-25.0,
                                             coupling_parameter=105.0):
 
     with open('test_input.inp') as f:
@@ -338,29 +279,201 @@ def print_shft_and_coup_lines_to_input_file(relevant_indices_and_fragments, shif
         if i >= 14:
             break
 
-def generate_probe_trajectory(squalane_simulation_dcd, squalane_simulation_crd, CN_simulation_dcd, CN_simulation_crd):
 
-    return squalane_simulation_crd, CN_simulation_crd
+def generate_probe_trajectory_starting_coordinates(squalane_coordinates_dcd, squalane_crd, squalane_snapshot_number=0):
+
+    squalane_u = md.Universe(squalane_crd, squalane_coordinates_dcd)
+
+    # Get coordinates from random snapshot from squalane trajectory
+    squalane_coordinates = squalane_u.trajectory[squalane_snapshot_number]
+
+    # Put CN normal to surface, C facing down
+    CN_coordinates_shifted = [[0, 0, 75], [0, 0, 76]]
+    # Stick the two snapshots together (CN X A from origin)
+    squalane_and_CN_coordinates = np.append(squalane_coordinates, CN_coordinates_shifted, axis=0)
+
+    return squalane_and_CN_coordinates
 
 
-def determine_reactive_CH_bonds(probe_trajectory_path, threshold_distance=5.0):
+def generate_probe_trajectory_starting_velocities(squalane_velocities_dcd, squalane_crd, squalane_snapshot_number=0, cn_velocity=1800):
 
-    #TODO: Add line to convert DCD to pdb (or function to use DCD)
+    squalane_u = md.Universe(squalane_crd, squalane_velocities_dcd, velocities=True)
 
-    frames = read_pdb(probe_trajectory_path)
+    # Get coordinates from random snapshot from squalane trajectory
+    squalane_velocities = squalane_u.trajectory[squalane_snapshot_number]
+
+    # CHARMM units use AKMA system. AKMA unit of time is 4.888821E-14 seconds and velocity is in Angstroms/AKMA time
+    # units. Need to convert cn_velocity in m/s to AKMA units.
+    cn_velocity_akma = cn_velocity * (10 ** 10) * (4.888821 * 10 ** (-14))
+
+    squalane_and_CN_velocities = squalane_velocities.append(cn_velocity_akma)
+
+    return squalane_and_CN_velocities
+
+
+def write_probe_trajectory_coordinates_file(squalane_and_CN_coordinates, file_name='probe_trajectory.crd'):
+    np.savetxt(file_name, squalane_and_CN_coordinates)
+
+
+def write_probe_trajectory_velocities_file(squalane_and_CN_velocities, file_name='probe_trajectory.vel'):
+    np.savetxt(file_name, squalane_and_CN_velocities)
+
+
+def generate_probe_trajectory_crd_file(squalane_crd_file_path, cn_atom_coordinates=[[0, 0, 75], [0, 0, 76.172]]):
+    # Copy and read in crd file
+    file_copy_path = squalane_crd_file_path + "_with_cn"
+
+    for i in range(len(cn_atom_coordinates)):
+        for j in range(len(cn_atom_coordinates[i])):
+            cn_atom_coordinates[i][j] = "{:.5f}".format(float(cn_atom_coordinates[i][j]))
+
+    with open(squalane_crd_file_path, 'r') as f:
+        i = 0
+        line_no = 0
+        for line in f:
+            line_no += 1
+            if not line.lstrip().startswith('*'):
+                if i == 0:
+                    sqa_natoms = int(line)
+                    sqa_cn_natoms = sqa_natoms + 2
+                    natom_replacement_command = "sed -e '0,/%s/ s/%s/%s/' %s > %s" % (sqa_natoms, sqa_natoms, sqa_cn_natoms,
+                                                                                    "'" + squalane_crd_file_path + "'",
+                                                                                    "'" + file_copy_path + "'")
+                    os.system(natom_replacement_command)
+                i += 1
+                if i > 1 and line.split()[0] == str(sqa_natoms):
+                    crd_line = line_no + 1
+                    frag_num = int(line.split()[1]) + 1
+
+    column_values_a = [sqa_natoms + 1, frag_num, 'CYA', 'C1', cn_atom_coordinates[0][0], cn_atom_coordinates[0][1],
+                       cn_atom_coordinates[0][2], 'NODI', frag_num, '0.00000']
+    column_values_b = [sqa_natoms + 2, frag_num, 'CYA', 'N2', cn_atom_coordinates[1][0], cn_atom_coordinates[1][1],
+                       cn_atom_coordinates[1][2], 'NODI', frag_num, '0.00000']
+    column_formats = ["{:>5}", "{:>4}", "{:<4}", "{:<4}", "{:>9}", "{:>9}", "{:>9}", "{:>4}", "{:<6}", "{:>7}"]
+
+    for i in range(len(column_values_a)):
+        column_values_a[i] = list(str(column_values_a[i]))
+        column_values_a[i] = ("%s" % column_formats[i]).format("".join(column_values_a[i]))
+        column_values_b[i] = list(str(column_values_b[i]))
+        column_values_b[i] = ("%s" % column_formats[i]).format("".join(column_values_b[i]))
+
+    column_values_a = ' '.join(column_values_a)
+    column_values_b = ' '.join(column_values_b)
+
+    # Insert blank line at end of file to be able to insert new lines there
+    blank_line_command = 'sed -i -e "\$a\  " %s' % ("'" + file_copy_path + "'")
+    os.system(blank_line_command)
+
+    # Insert CN coordinates at point n
+    insert_command_a = 'sed -i -e \'%si %s\' %s' % (crd_line, "\\" + column_values_a, "'" + file_copy_path + "'")
+    insert_command_b = 'sed -i -e \'%si %s\' %s' % (crd_line + 1, "\\" + column_values_b, "'" + file_copy_path + "'")
+
+    os.system(insert_command_a)
+    os.system(insert_command_b)
+
+    f.close()
+
+
+def generate_probe_trajectory_rst_file(squalane_rst_file_path, cn_atom_coordinates=[[0, 0, 75], [0, 0, 76.172]],
+                                       cn_velocity_ms=-1800, timestep=0.5*10**(-15)):
+
+    # CHARMM units use AKMA system. AKMA unit of time is 4.888821E-14 seconds and velocity is in Angstroms/AKMA time
+    # units. Need to convert cn_velocity in m/s to AKMA units.
+    cn_velocity_akma = cn_velocity_ms * (10**10) * (4.888821 * 10**(-14))
+    cn_velocity_As = cn_velocity_ms * (10**10)
+
+    # Create name for copy of rst file to pipe to
+    file_copy_path = squalane_rst_file_path + "_with_cn"
+
+    with open(squalane_rst_file_path, 'r') as f:
+        i = 1
+        for line in f:
+            i += 1
+            if line.split(',')[0] == " !NATOM":
+                sqa_natoms = int(next(f).split()[0])
+                sqa_cn_natoms = sqa_natoms + 2
+                natom_replacement_command = "sed -e '/!NATOM/!b' -e ':a' -e '"'s/%s/%s/;t trail'"' -e 'n;ba' -e " \
+                                            "':trail' -e 'n;btrail' %s > %s" % (sqa_natoms, sqa_cn_natoms,
+                                                                                "'" + squalane_rst_file_path + "'",
+                                                                                "'" + file_copy_path + "'")
+                os.system(natom_replacement_command)
+            elif line.split(',')[0] == " !XOLD":
+                xold_line = i
+            elif line.split(',')[0] == " !VX":
+                vx_line = i
+            elif line.split(',')[0] == " !X":
+                x_line = i
+
+    cn_atom_coordinates_old = list(np.array(cn_atom_coordinates) - np.array([0, 0, cn_velocity_As*timestep]))
+    for i in range(len(cn_atom_coordinates_old)):
+        cn_atom_coordinates_old[i] = list(cn_atom_coordinates_old[i])
+
+    cn_atom_velocities = [[0, 0, cn_velocity_akma], [0, 0, cn_velocity_akma]]
+
+    cn_atom_delta_coordinates = list(np.array(cn_atom_coordinates) - cn_atom_coordinates_old)
+    for i in range(len(cn_atom_delta_coordinates)):
+        cn_atom_delta_coordinates[i] = list(cn_atom_delta_coordinates[i])
+
+    for atom_value in [cn_atom_coordinates_old, cn_atom_velocities, cn_atom_delta_coordinates]:
+        for i in range(len(atom_value)):
+            new = [0, 0, 0]
+            for j in range(len(atom_value[i])):
+                new[j] = "{:.15e}".format(atom_value[i][j])
+                new[j] = list(new[j])
+                new[j] = ['D' if x == 'e' else x for x in new[j]]
+                new[j] = "{:>22}".format("".join(new[j]))
+
+            new = ''.join(new)
+            atom_value[i] = new
+
+    # Insert blank line at end of file to be able to insert new lines there
+    blank_line_command = 'sed -i -e "\$a\  " %s' % ("'" + file_copy_path + "'")
+    os.system(blank_line_command)
+
+    # Insert CN coordinates at point n-1
+    insert_command_1a = 'sed -i -e \'%si %s\' %s' % (xold_line + sqa_natoms + 1, "\\" + cn_atom_coordinates_old[0], "'" + file_copy_path + "'")
+    insert_command_1b = 'sed -i -e \'%si %s\' %s' % (xold_line + sqa_natoms + 2, "\\" + cn_atom_coordinates_old[1], "'" + file_copy_path + "'")
+    os.system(insert_command_1a)
+    os.system(insert_command_1b)
+
+    # Insert CN velocities at point n
+    insert_command_2a = 'sed -i -e \'%si %s\' %s' % (vx_line + sqa_natoms + 3, "\\" + cn_atom_velocities[0], "'" + file_copy_path + "'")
+    insert_command_2b = 'sed -i -e \'%si %s\' %s' % (vx_line + sqa_natoms + 4, "\\" + cn_atom_velocities[1], "'" + file_copy_path + "'")
+    os.system(insert_command_2a)
+    os.system(insert_command_2b)
+
+    # Insert CN coordinates at point n
+    insert_command_3a = 'sed -i -e \'%si %s\' %s' % (x_line + sqa_natoms + 5, "\\" + cn_atom_delta_coordinates[0], "'" + file_copy_path + "'")
+    insert_command_3b = 'sed -i -e \'%si %s\' %s' % (x_line + sqa_natoms + 6, "\\" + cn_atom_delta_coordinates[1], "'" + file_copy_path + "'")
+
+    os.system(insert_command_3a)
+    os.system(insert_command_3b)
+
+    f.close()
+
+
+def determine_reactive_CH_bonds(probe_trajectory_dcd_path, probe_trajectory_crd_path, threshold_distance=5.0):
+
+    u = md.Universe(probe_trajectory_crd_path, probe_trajectory_dcd_path)
+
+    with md.Writer("probe.pdb", u.atoms) as W:
+        for ts in u.trajectory:
+            W.write(u)
+
+    frames = read_pdb('probe.pdb')
     indexes = get_atoms_within_threshold_distance(frames, threshold_distance)
     H_atoms = get_relevant_indices_H_atoms_only(frames, indexes)
 
     return H_atoms
 
 
-def generate_production_trajectory(H_atoms, template_input_path):
+def generate_production_trajectory(relevant_indices_and_fragments, template_input_path):
 
     #TODO: Add functions that put probe crd and rst files with production input
 
-    print_patch_lines_to_input_file(H_atoms, template_input_path)
-    print_auto_lines_to_input_file(H_atoms)
-    print_psf_lines_to_input_file(H_atoms)
-    print_shft_and_coup_lines_to_input_file(H_atoms)
+    print_patch_lines_to_input_file(relevant_indices_and_fragments, template_input_path)
+    print_auto_lines_to_input_file(relevant_indices_and_fragments)
+    print_psf_lines_to_input_file(relevant_indices_and_fragments)
+    print_shift_and_coupling_lines_to_input_file(relevant_indices_and_fragments)
 
 

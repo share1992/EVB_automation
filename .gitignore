@@ -2,3 +2,5 @@
 *.swp
 
 *.png
+
+__pycache__/

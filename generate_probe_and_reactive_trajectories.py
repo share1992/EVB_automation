@@ -1,5 +1,5 @@
 import os
-from squalane_CN_contact import *
+from squalane_cn import *
 
 dirname = os.path.dirname(__file__)
 probe_dirname = os.path.join(dirname, 'test_input_files_probe')

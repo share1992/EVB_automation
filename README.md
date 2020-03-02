@@ -34,7 +34,7 @@ This repository consists of a set of scripts that can be used to automate genera
 - dyn.csh
 - lobos.csh
 
-
+This set of scripts basically "daisy-chains" several CHARMM trajectories together in order to generate several restart and coordinate files, which are usually only generated at the end of a trajectory. dynstrt.inp is the CHARMM input file for the first simulation and dyn.inp is the CHARMM input file for all subsequent simulations (they should be the same). dyn.csh is the main workhorse script and might need to be altered depending on the queueing system of the cluster being used. lobos.csh might also need to be changed (ever so slightly) depending on the queueing system. lobos.csh is the script that is submitted to the cluster queue and will continually submit CHARMM input files.
 
    **Outputs**
 - ![#c5f015](https://placehold.it/15/c5f015/000000?text=+) dyn[#].res (many)
@@ -49,6 +49,8 @@ This repository consists of a set of scripts that can be used to automate genera
 - ![#1589F0](https://placehold.it/15/1589F0/000000?text=+) coordinate file (.crd) path
 - CN radical velocity
 - timestep (of probe trajectory)
+
+
 
    **Outputs**
 - ![#9dc010](https://placehold.it/15/9dc010/000000?text=+) with_cn_dyn[#].res (many)

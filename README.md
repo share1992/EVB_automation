@@ -47,6 +47,7 @@ And here are the details for conducting each step:
 - restart file (.res or .rst)
 - coordinate file (.crd) 
 - CHARMM input (.inp) file
+- squalane_cyanide_system_mmff.rtf
 
 &nbsp;
  
@@ -65,6 +66,7 @@ And here are the details for conducting each step:
 - CHARMM input file (.inp)
 - restart files (.res or .rst)
 - coordinate files (.crd)
+- squalane_patch_defs_all.txt
 
 &nbsp;
 

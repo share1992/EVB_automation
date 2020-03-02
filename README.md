@@ -65,26 +65,26 @@ This repository consists of a set of scripts that can be used to automate genera
 - squalane_cyanide_system_mmff.rtf
 
    **Outputs**
-- probe[#].pdb 
+- ![#cc99ff](https://placehold.it/15/cc99ff/000000?text=+) probe[#].pdb 
 
 &nbsp;
  
 5. **Determine C-H bonds that come close to CN radical and generate relevant "reactive" trajectory input files.**
 
    **Inputs**
-- "Probe" trajectory PDB file (.pdb) path
+- ![#cc99ff](https://placehold.it/15/cc99ff/000000?text=+) "Probe" trajectory PDB file (.pdb) path
 - template CHARMM input file (.inp) path
 - distance cutoff (in Angstroms)
 
    **Outputs**
-- CHARMM input file (reactive[#].inp)
+- ![#ffc921](https://placehold.it/15/ffc921/000000?text=+) CHARMM input file (reactive[#].inp)
 
 &nbsp;
  
 6. **Run "reactive" EVB trajectories.**
 
    **Inputs**
-- CHARMM input file (reactive[#].inp)
+- ![#ffc921](https://placehold.it/15/ffc921/000000?text=+) CHARMM input file (reactive[#].inp)
 - ![#9dc010](https://placehold.it/15/9dc010/000000?text=+) restart files *from probe trajectories* (.res or .rst)
 - ![#106dc0](https://placehold.it/15/106dc0/000000?text=+) coordinate files *from probe trajectories* (.crd)
 - squalane_patch_defs_all.txt

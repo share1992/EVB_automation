@@ -1,0 +1,43 @@
+* dynstrt.inp
+* author:  Stephanie Hare
+*
+     
+stream rtfprm.str
+stream psfcrd.str
+stream cryst.str
+
+prnlev 5
+
+! set image update & nonbond update options
+update INBFRQ -1 IHBFRQ 10 IMGFRQ 50 CTONNB 6.5 CTOFNB 7.5 CUTNB 8.5 CUTIM 8.8 -
+
+ENERGY ctonnb 6.5 ctofnb 7.5 cutnb 8.5
+
+! dynamics variables
+set friction 10
+set temp     300
+set nsteps   2000
+
+SCALAR fbeta set @friction
+
+OPEN UNIT 10 READ CARD NAME dyn.rea
+OPEN UNIT 11 WRITE CARD NAME dyn.res
+OPEN UNIT 12 WRITE FILE NAME dyn.dcd
+
+! Dynamics block
+DYNAMICS LEAP LANGEVIN RESTART -                        ! restart NVT simulation with Langevin dynamics, leapfrog verlet integrator
+    NSTEP @nsteps TIMESTEP 0.0005 NPRINT 1000 -         ! run 2K steps @ 0.5 fs time-steps (1 ps)
+    TBATH @temp FIRSTT @temp FINALT @temp -             ! first temp (300K), final temp (300K), and temperature of bath (300 K)
+    IUNREA 10 IUNWRI 11 KUNIT -1 -                      ! read unit 10 rst file, save a restart file to unit 11
+    IUNCRD 12 NSAVC 100 -                               ! write coordinates to trajectory every 100 steps
+    IPRFRQ 100 ISVFRQ 100 -                             ! calculate average/rms fluctuations over 100 steps, 
+    ICHECW 0 IEQFRQ 0                                   ! do not check average temp of system and do not scale velocities
+
+! Coordinates after equilibration
+WRITE COOR CARD NAME dyn.crd
+
+close unit 10
+close unit 11
+close unit 12
+
+stop

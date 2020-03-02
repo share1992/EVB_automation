@@ -1,0 +1,140 @@
+* dyn.inp
+* author:  Stephanie Hare
+* external files: MMFFANG.PAR MMFFBOND.PAR MMFFCHG.PAR MMFFDEF.PAR
+*                 MMFFOOP.PAR MMFFSTBN.PAR MMFFSUP.PAR MMFFSYMB.PAR
+*                 MMFFTOR.PAR MMFFVDW.PAR
+*
+     
+! this is an input file for an NVT equilibration of a system consisting of
+! 100 squalane units generated using Packmol
+
+!set node ?whoiam
+
+prnlev 5
+
+! if @NODE .eq. 0 set p squalanemonomermmff
+
+!-------- Read Parameters and Topologies----------
+! first node reads param & top for squalane monomer
+!ensemble OPEN READ UNIT 1 CARD NAME squalanemonomermmff.rtf
+OPEN READ UNIT 1 CARD NAME squalanemonomermmff.rtf
+READ RTF UNIT 1 CARD
+CLOSE UNIT 1
+
+set 0 ../../data/
+
+bomlev 5
+
+!----Set up MMFF - taken from file 'mmff_setup.str', but modified to 
+!----include the ensemble commands
+
+Faster OFF ! default for mmff test cases
+use mmff force field
+
+open read form unit 1 name @0mmffsup.par
+read parameter card mmff SUPP unit 1
+
+open read form unit 1 name @0mmffprop.par
+read parameter card mmff PROP unit 1
+
+open read form unit 1 name @0mmffsymb.par
+read parameter card mmff SYMB unit 1
+open read form unit 1 name @0mmffdef.par
+read parameter card mmff DEFI  unit 1
+open read form unit 1 name @0mmffbndk.par
+read parameter card mmff BNDK  unit 1
+open read form unit 1 name @0mmffhdef.par
+read parameter card mmff HDEF  unit 1
+open read form unit 1 name @0mmffarom.par
+read parameter card mmff AROM  unit 1
+open read form unit 1 name @0mmffvdw.par
+read parameter card mmff VDW   unit 1
+open read form unit 1 name @0mmffbond.par
+read parameter card mmff BOND  unit 1
+open read form unit 1 name @0mmffchg.par
+read parameter card mmff CHRG 	 unit 1 
+open read form unit 1 name @0mmffpbci.par
+read parameter card mmff PBCI 	 unit 1 
+open read form unit 1 name @0mmffang.par
+read parameter card mmff ANGL 	 unit 1 
+open read form unit 1 name @0mmffstbn.par
+read parameter card mmff STBN 	  unit 1
+open read form unit 1 name @0mmffdfsb.par
+read parameter card mmff DFSB 	  unit 1
+open read form unit 1 name @0mmffoop.par
+read parameter card mmff OOPL 	  unit 1
+open read form unit 1 name @0mmfftor.par
+read parameter card mmff TORS  unit 1
+close unit 1
+
+!---------Read Sequence---------
+read sequence card
+* 100 SQA
+*
+ 100         
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA - 
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA - 
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA - 
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA -
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA -
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA -
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA -
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA -
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA -
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA 
+
+!---------Generate Sequence-------------
+generate setup warn first none last none nodi
+! print structure file information
+print psf
+
+!  Read coordinates 
+open unit 29 card read name "100sqa_44p3_nvt_300k_extended_z_7.crd"
+read coor card unit 29
+close unit 29
+
+ENERGY ctonnb 6.5 ctofnb 7.5 cutnb 8.5
+
+! build a cubic crystal for PBC at room temp
+crystal define tetragonal 44.3 44.3 221.5 90.0 90.0 90.0
+crystal build noperations 0
+
+! set image update & nonbond update options
+update INBFRQ -1 IHBFRQ 10 IMGFRQ 50 CTONNB 6.5 CTOFNB 7.5 CUTNB 8.5 CUTIM 8.8 -
+
+! turn on image centering
+image byres xcen 0. ycen 0. zcen 0. sele all end
+
+! geometry optimization
+! mini abnr nstep 1000 tolg 0.01
+
+! dynamics variables
+set friction 10
+set temp     300
+set nsteps   2000
+
+SCALAR fbeta set @friction
+
+OPEN WRITE UNFORMATTED UNIT 20 NAME dyn.dcd
+OPEN WRITE UNFORMATTED UNIT 21 NAME 100SQA_44p3A_velocities_nvt_300K_extended_z_8.dcd
+OPEN WRITE FORMATTED   UNIT 32 NAME dyn.res
+OPEN UNIT 51 READ CARD NAME dyn.rea 
+
+! Dynamics block
+DYNAMICS LEAP LANGEVIN RESTART -                        ! restart NVT simulation with Langevin dynamics, leapfrog verlet integrator
+    NSTEP @nsteps TIMESTEP 0.0005 NPRINT 1000 -         ! run 1.2M steps @ 0.5 fs time-steps (600 ps)
+    TBATH @temp FIRSTT @temp FINALT @temp -             ! first temp (300K), final temp (300K), and temperature of bath (300 K)
+    IUNREA 51 IUNWRI 32 KUNIT -1 -                      ! save a restart file to unit 32, read unit 51 rst file
+    IUNCRD 20 IUNVEL 21 NSAVC 100 NSAVV 100 -           ! write coordinates and velocities to trajectory every 100 steps
+    IPRFRQ 100 NPRINT 100 ISVFRQ 100 -                  ! calculate average/rms fluctuations over 100 steps, 
+    ICHECW 0 IEQFRQ 0                                   ! do not check average temp of system and do not scale velocities
+
+! Coordinates after equilibration
+WRITE COOR CARD NAME dyn.crd
+
+close unit 20
+close unit 21
+close unit 51
+close unit 32
+
+stop

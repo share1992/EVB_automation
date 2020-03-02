@@ -321,7 +321,7 @@ def write_probe_trajectory_velocities_file(squalane_and_CN_velocities, file_name
 
 def generate_probe_trajectory_crd_file(squalane_crd_file_path, cn_atom_coordinates=[[0, 0, 75], [0, 0, 76.172]]):
     # Copy and read in crd file
-    file_copy_path = squalane_crd_file_path + "_with_cn"
+    file_copy_path = "with_cn_" + squalane_crd_file_path
 
     for i in range(len(cn_atom_coordinates)):
         for j in range(len(cn_atom_coordinates[i])):
@@ -383,7 +383,7 @@ def generate_probe_trajectory_rst_file(squalane_rst_file_path, cn_atom_coordinat
     cn_velocity_As = cn_velocity_ms * (10**10)
 
     # Create name for copy of rst file to pipe to
-    file_copy_path = squalane_rst_file_path + "_with_cn"
+    file_copy_path = "with_cn_" + squalane_rst_file_path
 
     with open(squalane_rst_file_path, 'r') as f:
         i = 1

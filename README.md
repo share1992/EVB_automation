@@ -29,6 +29,10 @@ And here are the details for conducting each step:
 - dyn.csh
 - lobos.csh
 
+   **Outputs:**
+- dyn[#].res (many)
+- dyn[#].crd (many)
+
 &nbsp;
  
 3. **Extract snapshots from sampling trajectory and add CN radical with chosen coordinates and velocities.** 
@@ -38,6 +42,10 @@ And here are the details for conducting each step:
 - coordinate file (.crd) path
 - CN radical velocity
 - timestep (of probe trajectory)
+
+   **Outputs:**
+- with_cn_dyn[#].res (many)
+- with_cn_dyn[#].crd (many)
 
 &nbsp;
  
@@ -49,6 +57,9 @@ And here are the details for conducting each step:
 - CHARMM input (.inp) file
 - squalane_cyanide_system_mmff.rtf
 
+   **Outputs:**
+- probe[#].pdb 
+
 &nbsp;
  
 5. **Determine C-H bonds that come close to CN radical and generate relevant "reactive" trajectory input files.**
@@ -58,12 +69,15 @@ And here are the details for conducting each step:
 - template CHARMM input file (.inp) path
 - distance cutoff (in Angstroms)
 
+   **Outputs:**
+- reactive[#].inp 
+
 &nbsp;
  
 6. **Run "reactive" EVB trajectories.**
 
    **Inputs:**
-- CHARMM input file (.inp)
+- CHARMM input file (reactive[#].inp)
 - restart files (.res or .rst)
 - coordinate files (.crd)
 - squalane_patch_defs_all.txt

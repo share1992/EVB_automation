@@ -18,7 +18,8 @@ And here are the details for conducting each step:
 
 
 2. **Run an NVT sampling trajectory of the equilibrated slab of squalane molecules.** 
-Inputs : 
+
+   **Inputs:** 
 - dynstrt.inp
 - dyn.inp
 - [input].crd
@@ -27,26 +28,30 @@ Inputs :
 - lobos.csh
 
 3. **Extract snapshots from sampling trajectory and add CN radical with chosen coordinates and velocities.** 
-Inputs :
+
+   **Inputs:**
 - restart file (.res or .rst) path
 - coordinate file (.crd) path
 - CN radical velocity
 - timestep (of probe trajectory)
 
 4. **Run these snapshots as NVE "probe" trajectories and save the outputs in the PDB format.**
-Inputs :
+
+   **Inputs:**
 - restart file (.res or .rst)
 - coordinate file (.crd) 
 - CHARMM input (.inp) file
 
 5. **Determine C-H bonds that come close to CN radical and generate relevant "reactive" trajectory input files.**
-Inputs :
+
+   **Inputs:**
 - "Probe" trajectory PDB file (.pdb) path
 - template CHARMM input file (.inp) path
 - distance cutoff (in Angstroms)
 
 6. **Run "reactive" EVB trajectories.**
-Inputs :
+
+   **Inputs:**
 - CHARMM input file (.inp)
 - restart files (.res or .rst)
 - coordinate files (.crd)

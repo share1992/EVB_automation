@@ -176,12 +176,12 @@ def generate_patch_defs(H_atoms, atom_dictionary, squalane_mol2_file, skeleton_f
             outputfile.write("\n\n")
 
 
-def print_patch_lines_to_input_file(relevant_indices_and_fragments, template_file_path):
+def print_patch_lines_to_input_file(relevant_indices_and_fragments, template_file_path, number=1):
 
-    with open(template_file_path) as template_file, open('test_input.inp', 'w') as output_file:
+    with open(template_file_path) as template_file, open('reactive%s.inp' % number, 'w') as output_file:
         output_file.writelines(template_file)
 
-    with open('test_input.inp') as f:
+    with open('reactive%s.inp' % number) as f:
         content = f.readlines()
 
     patch_line = content.index("INSERT NECESSARY PATCHES HERE\n")
@@ -193,20 +193,20 @@ def print_patch_lines_to_input_file(relevant_indices_and_fragments, template_fil
         line_to_write = "if @NODE .eq. %s PATCH RH%s A %s A 101 setup" % ((i + 1), index_1, index_2)
         line_number = patch_line + i + 2
 
-        replace_command = 'sed -i "%si\%s" test_input.inp' % (line_number, line_to_write)
+        replace_command = 'sed -i "%si\%s" reactive%s.inp' % (line_number, line_to_write, number)
 
         os.system(replace_command)
 
         # Maximum of 16 nodes possible
         if i >= 14:
-            delete_command = 'sed -i %sd test_input.inp' % (patch_line + 1)
+            delete_command = 'sed -i %sd reactive%s.inp' % ((patch_line + 1), number)
             os.system(delete_command)
             break
 
 
-def print_auto_lines_to_input_file(relevant_indices_and_fragments):
+def print_auto_lines_to_input_file(relevant_indices_and_fragments, number=1):
 
-    with open('test_input.inp') as f:
+    with open('reactive%s.inp' % number) as f:
         content = f.readlines()
 
     auto_line = content.index("INSERT NECESSARY AUTOGENERATIONS HERE\n")
@@ -215,20 +215,20 @@ def print_auto_lines_to_input_file(relevant_indices_and_fragments):
         line_to_write = "if @NODE .eq. %s AUTO ANGL DIH" % (i + 1)
         line_number = auto_line + i + 2
 
-        replace_command = 'sed -i "%si\%s" test_input.inp' % (line_number, line_to_write)
+        replace_command = 'sed -i "%si\%s" reactive%s.inp' % (line_number, line_to_write, number)
 
         os.system(replace_command)
 
         # Maximum of 16 nodes possible
         if i >= 14:
-            delete_command = 'sed -i %sd test_input.inp' % (auto_line + 1)
+            delete_command = 'sed -i %sd reactive%s.inp ' % ((auto_line + 1), number)
             os.system(delete_command)
             break
 
 
-def print_psf_lines_to_input_file(relevant_indices_and_fragments):
+def print_psf_lines_to_input_file(relevant_indices_and_fragments, number=1):
 
-    with open('test_input.inp') as f:
+    with open('reactive%s.inp' % number) as f:
         content = f.readlines()
 
     psf_line = content.index("INSERT NECESSARY PSF LINES HERE\n")
@@ -237,20 +237,20 @@ def print_psf_lines_to_input_file(relevant_indices_and_fragments):
         line_to_write = "if @NODE .eq. %s print psf" % (i + 1)
         line_number = psf_line + i + 2
 
-        replace_command = 'sed -i "%si\%s" test_input.inp' % (line_number, line_to_write)
+        replace_command = 'sed -i "%si\%s" reactive%s.inp' % (line_number, line_to_write, number)
         os.system(replace_command)
 
         # Maximum of 16 nodes possible
         if i >= 14:
-            delete_command = 'sed -i %sd test_input.inp' % (psf_line + 1)
+            delete_command = 'sed -i %sd reactive%s.inp' % ((psf_line + 1), number)
             os.system(delete_command)
             break
 
 
-def print_shift_and_coupling_lines_to_input_file(relevant_indices_and_fragments, shift_parameter=-25.0,
+def print_shift_and_coupling_lines_to_input_file(relevant_indices_and_fragments, number=1, shift_parameter=-25.0,
                                             coupling_parameter=105.0):
 
-    with open('test_input.inp') as f:
+    with open('reactive%s.inp' % number) as f:
         content = f.readlines()
 
     shift_line = content.index("         SHFT 0   0.0 \n")
@@ -259,20 +259,20 @@ def print_shift_and_coupling_lines_to_input_file(relevant_indices_and_fragments,
         line_to_write = "         SHFT %s   %s" % ((i + 1), shift_parameter)
         line_number = shift_line + i + 2
 
-        replace_command = 'sed -i "%si\%s" test_input.inp' % (line_number, line_to_write)
+        replace_command = 'sed -i "%si\%s" reactive%s.inp' % (line_number, line_to_write, number)
         os.system(replace_command)
 
         if i >= 14:
             break
 
-    blank_line_command = 'sed -i "%si\ " test_input.inp' % (line_number + 1)
+    blank_line_command = 'sed -i "%si\ " reactive%s.inp' % ((line_number + 1), number)
     os.system(blank_line_command)
 
     for i in range(len(relevant_indices_and_fragments)):
         line_to_write = "         COUP 0 %s CONST %s" % ((i + 1), coupling_parameter)
         new_line_number = line_number + i + 2
 
-        replace_command = 'sed -i "%si\%s" test_input.inp' % (new_line_number, line_to_write)
+        replace_command = 'sed -i "%si\%s" reactive%s.inp' % (new_line_number, line_to_write, number)
         os.system(replace_command)
 
         # Maximum of 16 nodes possible

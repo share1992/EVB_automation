@@ -50,7 +50,7 @@ This set of scripts basically "daisy-chains" several CHARMM trajectories togethe
 - CN radical velocity
 - timestep (of probe trajectory)
 
-
+Uncomment [relevant lines] of generate_probe_and_reactive_trajectories.py to alter restart and coordinate files from sampling trajectory. 
 
    **Outputs**
 - ![#9dc010](https://placehold.it/15/9dc010/000000?text=+) with_cn_dyn[#].res (many)
@@ -66,6 +66,8 @@ This set of scripts basically "daisy-chains" several CHARMM trajectories togethe
 - CHARMM input (.inp) file
 - squalane_cyanide_system_mmff.rtf
 
+Submit NVE CHARMM input file using altered restart and coordinate files extracted from sampling trajectory. Save the output as a PDB file, for example by loading the original .crd file into VMD and loading the output .dcd file into it, and saving as a .pdb.
+
    **Outputs**
 - ![#cc99ff](https://placehold.it/15/cc99ff/000000?text=+) probe[#].pdb 
 
@@ -77,6 +79,8 @@ This set of scripts basically "daisy-chains" several CHARMM trajectories togethe
 - ![#cc99ff](https://placehold.it/15/cc99ff/000000?text=+) "Probe" trajectory PDB file (.pdb) path
 - template CHARMM input file (.inp) path
 - distance cutoff (in Angstroms)
+
+Uncomment [relevant lines] of generate_probe_and_reactive_trajectories.py to determine C-H bonds to make reactive and generate a CHARMM input file that will allow these bonds to break. 
 
    **Outputs**
 - ![#ffc921](https://placehold.it/15/ffc921/000000?text=+) CHARMM input file (reactive[#].inp)
@@ -90,6 +94,8 @@ This set of scripts basically "daisy-chains" several CHARMM trajectories togethe
 - ![#9dc010](https://placehold.it/15/9dc010/000000?text=+) restart files *from probe trajectories* (.res or .rst)
 - ![#106dc0](https://placehold.it/15/106dc0/000000?text=+) coordinate files *from probe trajectories* (.crd)
 - squalane_patch_defs_all.txt
+
+Run the reactive CHARMM input filesto generate your final EVB trajectories. 
 
    **Outputs**
 - CHARMM output files (.out)

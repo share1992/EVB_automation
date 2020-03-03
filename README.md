@@ -17,7 +17,7 @@ This repository consists of a set of scripts that can be used to automate genera
 
 1. **Equilibrate slab of squalane molecules. _This step should be done prior to using this repository._**
    
-   Equilibration can be done in Gromacs, CHARMM, or any other MD program. All that is needed from this step is the coordinates generated at the end of the equilibration step (a single frame) in .crd format. 
+Equilibration can be done in Gromacs, CHARMM, or any other MD program. All that is needed from this step is the coordinates generated at the end of the equilibration step (a single frame) in .crd format. 
    
 **Output**
 - ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) equilibration_frame.crd

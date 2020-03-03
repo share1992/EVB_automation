@@ -64,7 +64,13 @@ def read_pdb(path):
 
 
 def get_atoms_within_threshold_distance(traj_frames_df, threshold_distance):
-
+    """
+    This will currently only work for a cyano radical (fragment name = CYA). If it is to be extended to other systems,
+    this will need to be modified.
+    :param traj_frames_df:
+    :param threshold_distance:
+    :return:
+    """
     C_index = traj_frames_df[0].index[(traj_frames_df[0]['fragment'] == 'CYA') & (traj_frames_df[0]['local index'] == 'C1')][0]
     N_index = traj_frames_df[0].index[(traj_frames_df[0]['fragment'] == 'CYA') & (traj_frames_df[0]['local index'] == 'N2')][0]
 
@@ -83,7 +89,13 @@ def get_atoms_within_threshold_distance(traj_frames_df, threshold_distance):
 
 
 def get_relevant_indices_H_atoms_only(traj_frames_df, atom_indexes):
-
+    """
+    This function takes the list of atom indexes that come within the threshold distance of the C of the CN radical
+    and (1) determines which indexes are hydrogens and (2) what the local index and fragment index are for that H.
+    :param traj_frames_df:
+    :param atom_indexes:
+    :return:
+    """
     frame_1 = traj_frames_df[0]
     local_indexes = []
     fragments = []
@@ -203,6 +215,9 @@ def print_patch_lines_to_input_file(relevant_indices_and_fragments, template_fil
             os.system(delete_command)
             break
 
+    #TODO: Have input be how many processors are available
+    #TODO: Once threshold number of processors is hit, make NEW input file with the rest of the CH bonds
+
 
 def print_auto_lines_to_input_file(relevant_indices_and_fragments, number=1):
 
@@ -225,6 +240,9 @@ def print_auto_lines_to_input_file(relevant_indices_and_fragments, number=1):
             os.system(delete_command)
             break
 
+        # TODO: Have input be how many processors are available
+        # TODO: Once threshold number of processors is hit, make NEW input file with the rest of the CH bonds
+
 
 def print_psf_lines_to_input_file(relevant_indices_and_fragments, number=1):
 
@@ -245,6 +263,9 @@ def print_psf_lines_to_input_file(relevant_indices_and_fragments, number=1):
             delete_command = 'sed -i %sd reactive%s.inp' % ((psf_line + 1), number)
             os.system(delete_command)
             break
+
+        # TODO: Have input be how many processors are available
+        # TODO: Once threshold number of processors is hit, make NEW input file with the rest of the CH bonds
 
 
 def print_shift_and_coupling_lines_to_input_file(relevant_indices_and_fragments, number=1, shift_parameter=-25.0,
@@ -279,6 +300,9 @@ def print_shift_and_coupling_lines_to_input_file(relevant_indices_and_fragments,
         if i >= 14:
             break
 
+    #TODO: Have input be how many processors are available
+    #TODO: Once threshold number of processors is hit, make NEW input file with the rest of the CH bonds
+
 
 def generate_probe_trajectory_starting_coordinates(squalane_coordinates_dcd, squalane_crd, squalane_snapshot_number=0):
 
@@ -309,14 +333,6 @@ def generate_probe_trajectory_starting_velocities(squalane_velocities_dcd, squal
     squalane_and_CN_velocities = squalane_velocities.append(cn_velocity_akma)
 
     return squalane_and_CN_velocities
-
-
-def write_probe_trajectory_coordinates_file(squalane_and_CN_coordinates, file_name='probe_trajectory.crd'):
-    np.savetxt(file_name, squalane_and_CN_coordinates)
-
-
-def write_probe_trajectory_velocities_file(squalane_and_CN_velocities, file_name='probe_trajectory.vel'):
-    np.savetxt(file_name, squalane_and_CN_velocities)
 
 
 def generate_probe_trajectory_crd_file(squalane_crd_file_path, cn_atom_coordinates=[[0, 0, 75], [0, 0, 76.172]]):
@@ -453,7 +469,7 @@ def generate_probe_trajectory_rst_file(squalane_rst_file_path, cn_atom_coordinat
 
 
 def determine_reactive_CH_bonds(probe_trajectory_dcd_path, probe_trajectory_crd_path, threshold_distance=5.0):
-
+    #TODO: Make sure this is deprecated
     u = md.Universe(probe_trajectory_crd_path, probe_trajectory_dcd_path)
 
     with md.Writer("probe.pdb", u.atoms) as W:
@@ -470,6 +486,8 @@ def determine_reactive_CH_bonds(probe_trajectory_dcd_path, probe_trajectory_crd_
 def generate_production_trajectory(relevant_indices_and_fragments, template_input_path):
 
     #TODO: Add functions that put probe crd and rst files with production input
+    #TODO: Have input be how many processors are available
+    #TODO: Once threshold number of processors is hit, make NEW input file with the rest of the CH bonds
 
     print_patch_lines_to_input_file(relevant_indices_and_fragments, template_input_path)
     print_auto_lines_to_input_file(relevant_indices_and_fragments)

@@ -11,14 +11,13 @@ This repository consists of a set of scripts that can be used to automate genera
 5. **Determine C-H bonds that come close to CN radical and generate relevant "reactive" trajectory input files.**
 6. **Run "reactive" EVB trajectories.**
 
-&nbsp;
-
 ## Dependencies
 
 Dependencies can be found in requirements.txt. To install all dependencies, use `pip install` in Terminal:
 
 `pip install -r requirements.txt`
 
+&nbsp;
 
 ## Details for Conducting Each Step
 

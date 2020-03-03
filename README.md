@@ -13,6 +13,13 @@ This repository consists of a set of scripts that can be used to automate genera
 
 &nbsp;
 
+## Dependencies
+
+Dependencies can be found in requirements.txt. To install all dependencies, use `pip install` in Terminal:
+
+`pip install -r requirements.txt`
+
+
 ## Details for Conducting Each Step
 
 1. **Equilibrate slab of squalane molecules. _This step should be done prior to using this repository._**

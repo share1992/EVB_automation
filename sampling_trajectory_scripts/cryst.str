@@ -1,0 +1,8 @@
+! build a cubic crystal for PBC at room temp
+crystal define tetragonal 44.3 44.3 221.5 90.0 90.0 90.0
+crystal build noperations 0
+
+! turn on image centering
+image byres xcen 0. ycen 0. zcen 0. sele all end
+
+return

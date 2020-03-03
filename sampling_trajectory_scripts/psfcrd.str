@@ -1,0 +1,27 @@
+!---------Read Sequence---------
+read sequence card
+* 100 SQA
+*
+ 100          
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA - 
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA - 
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA - 
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA -
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA -
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA -
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA -
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA -
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA -
+SQA SQA SQA SQA SQA SQA SQA SQA SQA SQA
+
+!---------Generate Sequence-------------
+generate setup warn first none last none nodi
+! print structure file information
+print psf
+
+!  Read coordinates 
+open unit 29 card read name 100sqa_44p3_nvt_300k_extended_z_7.crd
+read coor card unit 29
+close unit 29
+
+return

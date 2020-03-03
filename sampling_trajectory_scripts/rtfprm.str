@@ -1,0 +1,58 @@
+* external files: MMFFANG.PAR MMFFBOND.PAR MMFFCHG.PAR MMFFDEF.PAR
+*                 MMFFOOP.PAR MMFFSTBN.PAR MMFFSUP.PAR MMFFSYMB.PAR
+*                 MMFFTOR.PAR MMFFVDW.PAR
+
+!-------- Read Parameters and Topologies----------
+! first node reads param & top for squalane monomer
+OPEN READ UNIT 1 CARD NAME squalanemonomermmff.rtf
+READ RTF UNIT 1 CARD
+CLOSE UNIT 1
+
+set 0 ../../data/
+
+bomlev 5
+
+!----Set up MMFF - taken from file 'mmff_setup.str', but modified to
+!----include the ensemble commands
+
+Faster OFF ! default for mmff test cases
+use mmff force field
+
+open read form unit 1 name @0mmffsup.par
+read parameter card mmff SUPP unit 1
+
+open read form unit 1 name @0mmffprop.par
+read parameter card mmff PROP unit 1
+
+open read form unit 1 name @0mmffsymb.par
+read parameter card mmff SYMB unit 1
+open read form unit 1 name @0mmffdef.par
+read parameter card mmff DEFI  unit 1
+open read form unit 1 name @0mmffbndk.par
+read parameter card mmff BNDK  unit 1
+open read form unit 1 name @0mmffhdef.par
+read parameter card mmff HDEF  unit 1
+open read form unit 1 name @0mmffarom.par
+read parameter card mmff AROM  unit 1
+open read form unit 1 name @0mmffvdw.par
+read parameter card mmff VDW   unit 1
+open read form unit 1 name @0mmffbond.par
+read parameter card mmff BOND  unit 1
+open read form unit 1 name @0mmffchg.par
+read parameter card mmff CHRG    unit 1
+open read form unit 1 name @0mmffpbci.par
+read parameter card mmff PBCI    unit 1
+open read form unit 1 name @0mmffang.par
+read parameter card mmff ANGL    unit 1
+open read form unit 1 name @0mmffstbn.par
+read parameter card mmff STBN     unit 1
+open read form unit 1 name @0mmffdfsb.par
+read parameter card mmff DFSB     unit 1
+open read form unit 1 name @0mmffoop.par
+read parameter card mmff OOPL     unit 1
+open read form unit 1 name @0mmfftor.par
+read parameter card mmff TORS  unit 1
+close unit 1
+
+return
+

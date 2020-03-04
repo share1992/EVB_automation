@@ -107,6 +107,7 @@ Uncomment [relevant lines] of generate_probe_and_reactive_trajectories.py to det
 - ![#9dc010](https://placehold.it/15/9dc010/000000?text=+) restart files *from probe trajectories* (.res or .rst)
 - ![#106dc0](https://placehold.it/15/106dc0/000000?text=+) coordinate files *from probe trajectories* (.crd)
 - squalane_patch_defs_all.txt
+- job submission script (e.g., dyn1_reactive_job.sh)
 
 Run the reactive CHARMM input filesto generate your final EVB trajectories. 
 

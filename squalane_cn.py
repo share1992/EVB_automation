@@ -460,6 +460,9 @@ def generate_probe_trajectory_rst_file(squalane_rst_file_path, cn_atom_coordinat
     os.system(insert_command_2a)
     os.system(insert_command_2b)
 
+    #TODO: Check that the math of calculating the delta coordinates is correct. Got a CHARMM error saying the "energy
+    # change tolerance was exceeded"
+
     # Insert CN coordinates at point n
     insert_command_3a = 'sed -i -e \'%si %s\' %s' % (x_line + sqa_natoms + 5, "\\" + cn_atom_delta_coordinates[0], "'" + file_copy_path + "'")
     insert_command_3b = 'sed -i -e \'%si %s\' %s' % (x_line + sqa_natoms + 6, "\\" + cn_atom_delta_coordinates[1], "'" + file_copy_path + "'")

@@ -135,20 +135,18 @@ set nsteps   10000
 
 ! SCALAR fbeta set @friction
 
-OPEN WRITE UNFORMATTED UNIT 20 NAME 100sqa_1cn_coordinates_nve_vv2_2_ext.dcd
-OPEN WRITE UNFORMATTED UNIT 21 NAME 100sqa_1cn_velocities_nve_vv2_2_ext.dcd
-OPEN WRITE FORMATTED   UNIT 44 NAME 100sqa_1cn_nve_vv2_2_ext.juj
-ensemble OPEN WRITE FORMATTED   UNIT 32 NAME 100sqa_1cn_nve_vv2_2_ext.rst
-ensemble OPEN UNIT 51 READ CARD NAME 100sqa_1cn_nve_vv2_1_ext.rst 
+OPEN WRITE UNFORMATTED UNIT 20 NAME [dcd file to be written]
+ensemble OPEN WRITE FORMATTED   UNIT 32 NAME [restart file to be written]
+ensemble OPEN UNIT 51 READ CARD NAME [restart file to be read] 
 
 ! Dynamics block
-DYNAMICS VV2 RESTART -                        ! start new run with velocity verlet integrator
-    NSTEP @nsteps TIMESTEP 0.00005 NPRINT 25 -         ! run 10000 steps @ 0.05 fs time-steps (500 ps)
-!    TBATH @temp FIRSTT @temp FINALT @temp -             ! first temp, final temp, and temperature of bath all 298 K
-    IUNREA 51 IUNWRI 32 KUNIT -1 -                      ! save a restart file to unit 32, read unit 51 rst file
-    IUNCRD 20 IUNVEL 21 NSAVC 25 -                     ! write coordinates and velocities to trajectory every 10 steps
-    IPRFRQ 50 NPRINT 10 ISVFRQ @nsteps -               ! calculate average/rms fluctuations over 50 steps, print energy every 10 steps to KUNIT, write restart file every nsteps (once?)
-    ICHECW 0 IEQFRQ 0 -                                 ! do not check average temp of system and do not scale velocities
+DYNAMICS VV2 RESTART -                                ! start new run with velocity verlet integrator
+    NSTEP @nsteps TIMESTEP 0.0005 NPRINT 25 -         ! run 10000 steps @ 0.5 fs time-steps
+!    TBATH @temp FIRSTT @temp FINALT @temp -          ! first temp, final temp, and temperature of bath all 298 K
+    IUNREA 51 IUNWRI 32 KUNIT -1 -                    ! save a restart file to unit 32, read unit 51 rst file
+    IUNCRD 20 IUNVEL 21 NSAVC 25 -                    ! write coordinates and velocities to trajectory every 10 steps
+    IPRFRQ 50 NPRINT 10 ISVFRQ @nsteps -              ! calculate average/rms fluctuations over 50 steps, print energy every 10 steps to KUNIT, write restart file every nsteps (once?)
+    ICHECW 0 IEQFRQ 0 -                               ! do not check average temp of system and do not scale velocities
 
 close unit 20
 close unit 21

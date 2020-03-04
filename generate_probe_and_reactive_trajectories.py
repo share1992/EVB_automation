@@ -7,6 +7,7 @@ dirname = os.path.dirname(__file__)
 probe_dirname = os.path.join(dirname, 'test_input_files_probe')
 reactive_dirname = os.path.join(dirname, 'test_input_files_reactive')
 template_dirname = os.path.join(dirname, 'template_and_patch_files')
+# probe_dirname = os.path.join(dirname, 'step3')
 
 # If not already complete, generate the patch definitions file (squalane_patch_defs_all.txt) by uncommenting the two
 # lines below
@@ -15,12 +16,12 @@ template_dirname = os.path.join(dirname, 'template_and_patch_files')
 
 # # Generate probe trajectory
 # # Path to restart file being altered (a copy will be made)
-# sqa_rst = os.path.join(probe_dirname, 'dyn100.res')
+# sqa_rst = os.path.join(probe_dirname, 'dyn1.res')
 # # sqa_rst = os.path.join(probe_dirname, 'dyn101.res')
 # # sqa_rst = os.path.join(probe_dirname, 'dyn102.res')
 #
 # # Path to crd file being altered (a copy will be made)
-# sqa_crd = os.path.join(probe_dirname, 'dyn100.crd')
+# sqa_crd = os.path.join(probe_dirname, 'dyn1.crd')
 # # sqa_crd = os.path.join(probe_dirname, 'dyn101.crd')
 # # sqa_crd = os.path.join(probe_dirname, 'dyn102.crd')
 #

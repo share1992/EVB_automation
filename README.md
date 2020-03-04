@@ -77,7 +77,7 @@ Uncomment [relevant lines] of generate_probe_and_reactive_trajectories.py to alt
 - ![#106dc0](https://placehold.it/15/106dc0/000000?text=+) coordinate file (with_cn_dyn[#].crd) 
 - CHARMM input (.inp) file
 - squalane_cyanide_system_mmff.rtf
-- job submission script 
+- job submission script (e.g., dyn[#]\_probe_job.sh)
 
 Submit NVE CHARMM input file using altered restart and coordinate files extracted from sampling trajectory. Save the output as a PDB file, for example by loading the original .crd file into VMD and loading the output .dcd file into it, and saving as a .pdb.
 

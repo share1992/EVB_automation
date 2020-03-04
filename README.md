@@ -42,6 +42,7 @@ Equilibration can be done in Gromacs, CHARMM, or any other MD program. All that 
 - cryst.str
 - psfcrd.str
 - rtfprm.str
+- dyn.rea
 
 This set of scripts basically "daisy-chains" several CHARMM trajectories together in order to generate several restart and coordinate files, which are usually only generated at the end of a trajectory. dynstrt.inp is the CHARMM input file for the first simulation and dyn.inp is the CHARMM input file for all subsequent simulations. dyn.csh is the main workhorse script and might need to be altered depending on the queueing system of the cluster being used. lobos.csh might also need to be changed (ever so slightly) depending on the queueing system. lobos.csh is the script that is submitted to the cluster queue and will continually submit CHARMM input files.
 

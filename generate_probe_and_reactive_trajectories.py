@@ -1,7 +1,9 @@
 import os
 from squalane_cn import *
 
+# This section defines the paths to various directories containing files for testing this script
 dirname = os.path.dirname(__file__)
+# Directory with *.res and *.crd files to add CN to
 probe_dirname = os.path.join(dirname, 'test_input_files_probe')
 reactive_dirname = os.path.join(dirname, 'test_input_files_reactive')
 template_dirname = os.path.join(dirname, 'template_and_patch_files')
@@ -22,12 +24,12 @@ template_dirname = os.path.join(dirname, 'template_and_patch_files')
 # # sqa_crd = os.path.join(probe_dirname, 'dyn101.crd')
 # # sqa_crd = os.path.join(probe_dirname, 'dyn102.crd')
 #
-# # CN velocity in m/s in the z-direction (default=-1800, or 1800 m/s in the -z-direction)
+# CN velocity in m/s in the z-direction (default=-1800, or 1800 m/s in the -z-direction)
 # cn_velocity_ms = -1800
-# # Be sure to include correct time step of trajectory used to generate rst file (used to calculate "X/Y/ZOLD" of CN) in
-# # units of s (default=0.5*10**(-15), or 0.5 fs)
+# Be sure to include correct time step of trajectory used to generate rst file (used to calculate "X/Y/ZOLD" of CN) in
+# units of s (default=0.5*10**(-15), or 0.5 fs)
 # timestep = 0.5*10**(-15)
-#
+
 # generate_probe_trajectory_crd_file(sqa_crd)
 # generate_probe_trajectory_rst_file(sqa_rst, cn_velocity_ms=cn_velocity_ms, timestep=timestep)
 

@@ -131,7 +131,7 @@ IMAGE BYRES xcen 0. ycen 0. zcen 0. SELE RESNAME SQA END
 ! dynamics variables
 set friction 10
 set temp     298
-set nsteps   100000
+set nsteps   10000
 
 ! SCALAR fbeta set @friction
 
@@ -143,7 +143,7 @@ ensemble OPEN UNIT 51 READ CARD NAME 100sqa_1cn_nve_vv2_1_ext.rst
 
 ! Dynamics block
 DYNAMICS VV2 RESTART -                        ! start new run with velocity verlet integrator
-    NSTEP @nsteps TIMESTEP 0.00005 NPRINT 25 -         ! run 10000 steps @ 0.01 fs time-steps (500 ps)
+    NSTEP @nsteps TIMESTEP 0.00005 NPRINT 25 -         ! run 10000 steps @ 0.05 fs time-steps (500 ps)
 !    TBATH @temp FIRSTT @temp FINALT @temp -             ! first temp, final temp, and temperature of bath all 298 K
     IUNREA 51 IUNWRI 32 KUNIT -1 -                      ! save a restart file to unit 32, read unit 51 rst file
     IUNCRD 20 IUNVEL 21 NSAVC 25 -                     ! write coordinates and velocities to trajectory every 10 steps
